@@ -64,3 +64,4 @@ TEST(laCasaEstaQuedandoChicaTEST, hacinamientoCriticoTodosIgualAUno) {
     }
 }
 
+//TODO: Añadir test case para cobertura 100% y alguno que regrese un valor flotante (no todo=1 como el test por defecto)

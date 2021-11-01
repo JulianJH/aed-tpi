@@ -77,3 +77,5 @@ TEST(costoSubsidioMejoraTEST, casoFacil) {
 
     EXPECT_EQ(2*monto, res);
 }
+
+//TODO: Añadir test case para cobertura 100%

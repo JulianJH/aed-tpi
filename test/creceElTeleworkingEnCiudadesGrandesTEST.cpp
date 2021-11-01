@@ -103,3 +103,5 @@ TEST(creceElTeleworkingEnCiudadesGrandesTEST, eph2016a2018) {
 
     EXPECT_EQ( true, creceElTeleworkingEnCiudadesGrandes(t1h, t1i, t2h, t2i) );
 }
+
+//TODO: Añadir test case para cobertura 100%
