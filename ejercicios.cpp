@@ -49,18 +49,19 @@ vector< pair < int, float > > laCasaEstaQuedandoChica ( eph_h th, eph_i ti ) {
 
 // Implementacion Problema 4
 bool creceElTeleworkingEnCiudadesGrandes ( eph_h t1h, eph_i t1i, eph_h t2h, eph_i t2i ) {
-	bool resp = false;
 	
-	// TODO
-	
-  return  resp;
+	return (proporcionTeleworking(t2h, t2i) > proporcionTeleworking(t1h, t1i));
 }
 
 // Implementacion Problema 5
 int costoSubsidioMejora( eph_h th, eph_i ti, int monto ){
-	int resp = -1;
-	
-	// TODO
+	int resp = 0;
+
+	for (int i = 0; i < th.size(); i++){
+	    if (tieneCasaPropia(th[i]) && tieneCasaChica(th[i] ,ti)){
+	        resp += monto;
+	    }
+	}
 	
   return  resp;
 }
