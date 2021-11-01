@@ -31,5 +31,21 @@ int maxCantHabitacionesEnCasaEnRegion ( eph_h th, dato r );
 float proporcionDeCasasConHC ( eph_h th, eph_i ti, dato region );
 bool esHogarConPosibleHC ( hogar h, dato region );
 bool esHogarConHacinamientoCritico ( hogar h, eph_i );
+float  proporcionTeleworking (eph_h th , eph_i ti);
+int cantIndividuosTrabajandoEnSuVivienda(eph_h th , eph_i ti);
+int cantidadDeIndividuosQueTrabajan(eph_h th , eph_i ti);
+bool trabajaEnSuVivienda(individuo i , eph_h th);
+bool individuoEnHogarValido(individuo i , eph_h th);
+int anio (eph_i ti);
+int trimestre (eph_i ti);
+bool esDeCiudadGrande (individuo i , eph_h th);
+bool suHogarTieneEspaciosReservadosParaElTrabajo(individuo i , eph_h th);
+bool suHogarEsCasaODepartamento(individuo i, eph_h th);
+bool tieneEspaciosReservadosParaElTrabajo(hogar h);
+bool realizaSusTareasEnEsteHogar(individuo i);
+bool esCasaODepartamento(hogar h);
+bool trabaja(individuo i);
+bool tieneCasaPropia (hogar h);
+bool tieneCasaChica(hogar h , eph_i ti);
 
 #endif //SOLUCION_AUXILIARES_H
