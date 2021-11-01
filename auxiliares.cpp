@@ -21,8 +21,8 @@ bool esValida ( eph_h th, eph_i ti ) {
 bool esMatriz ( vector<vector<dato>> t ) {
     bool resp = true;
 
-    for (int i = 1; i < t.size(); i++) {
-        resp = resp && (t[i].size() == t[i-1].size());
+    for (int i = 1; i < t.size() && resp; i++) {
+        resp = (t[i].size() == t[i-1].size());
     }
 
     return resp;
@@ -33,79 +33,77 @@ bool vacia ( vector<vector<dato>> t ) {
 }
 
 bool cantidadCorrectaDeColumnasI ( eph_i ti) {
-    bool resp = true;
+    bool correcta = true;
 
-    for (int i = 0; i < ti.size(); i++) {
-        resp = resp && (ti[i].size()==FILAS_INDIVIDUO);
+    for (int i = 0; i < ti.size() && correcta; i++) {
+        correcta = (ti[i].size()==FILAS_INDIVIDUO);
     }
 
-    return resp;
+    return correcta;
 }
 
 bool cantidadCorrectaDeColumnasH ( eph_h th) {
-    bool resp = true;
+    bool correcta = true;
 
-    for (int i = 0; i < th.size(); i++) {
-        resp = resp && (th[i].size()==FILAS_HOGAR);
+    for (int i = 0; i < th.size() && correcta; i++) {
+        correcta = (th[i].size()==FILAS_HOGAR);
     }
 
-    return resp;
+    return correcta;
 }
 
 bool hayIndividuosSinHogares ( eph_i ti, eph_h th ) {
-    bool resp = false;
+    bool haySin = false;
 
-    for (int i = 0; i < ti.size(); i++) {
-        resp = resp || !hayHogarConCodigo(th, ti[i][INDCODUSU]);
+    for (int i = 0; i < ti.size() && !haySin; i++) {
+        haySin = !hayHogarConCodigo(th, ti[i][INDCODUSU]);
     }
 
-    return resp;
+    return haySin;
 }
 
 bool hayHogarConCodigo ( eph_h th, dato c ) {
-    bool resp = false;
+    bool hay = false;
 
-    for (int i = 0; i < th.size(); i++) {
-        resp = resp || th[i][HOGCODUSU] == c;
+    for (int i = 0; i < th.size() && !hay; i++) {
+        hay = (th[i][HOGCODUSU] == c);
     }
 
-    return resp;
+    return hay;
 }
 
 bool hayHogaresSinIndividuos ( eph_i ti, eph_h th ) {
-    bool resp = false;
+    bool haySin = false;
 
-    for (int i = 0; i < ti.size(); i++) {
-        resp = resp || !hayIndividuoConCodigo(th, ti[i][HOGCODUSU]);
+    for (int i = 0; i < ti.size() && !haySin; i++) {
+        haySin = !hayIndividuoConCodigo(th, ti[i][HOGCODUSU]);
     }
 
-    return resp;
+    return haySin;
 }
 
 bool hayIndividuoConCodigo ( eph_i ti, dato c ) {
-    bool resp = false;
+    bool hay = false;
 
-    for (int i = 0; i < ti.size(); i++) {
-        if (ti[i][INDCODUSU] == c) {
-            resp = true;
-        }
+    for (int i = 0; i < ti.size() && !hay; i++) {
+        hay = (ti[i][INDCODUSU] == c);
     }
 
-    return resp;
+    return hay;
 }
 
 bool hayRepetidosI ( eph_i ti ) {
-    bool resp = false;
+    bool repetidos = false;
 
-    for (int i = 0; i < ti.size(); i++) {
-        for (int j = 0; j < ti.size(); j++) {
+    for (int i = 0; i < ti.size() && !repetidos; i++) {
+        for (int j = 0; j < ti.size() && !repetidos; j++) {
             if (i != j && mismoCodusuYComponente(ti[i], ti[j])) {
-                resp = true;
+                repetidos = true;
             }
         }
     }
 
-    return resp;
+    return repetidos;
 }
 
 bool mismoCodusuYComponente ( individuo i1, individuo i2 ) {
@@ -113,46 +111,46 @@ bool mismoCodusuYComponente ( individuo i1, individuo i2 ) {
 }
 
 bool hayRepetidosH ( eph_h th ) {
-    bool resp = false;
+    bool repetidos = false;
 
-    for (int i = 0; i < th.size(); i++) {
-        for (int j = 0; j < th.size(); j++) {
+    for (int i = 0; i < th.size() && !repetidos; i++) {
+        for (int j = 0; j < th.size() && !repetidos; j++) {
             if (i != j && th[i][HOGCODUSU] == th[j][HOGCODUSU]) {
-                resp = true;
+                repetidos = true;
             }
         }
     }
 
-    return resp;
+    return repetidos;
 }
 
 bool mismoAnioYTrimestre ( eph_i ti, eph_h th ) {
-    bool resp = true;
+    bool mismo = true;
 
-    for (int i = 1; i < ti.size(); i++) {
-        resp = resp && (ti[i][INDANIO] == ti[i-1][INDANIO] && ti[i][INDTRIMESTRE] == ti[i-1][INDTRIMESTRE]);
+    for (int i = 1; i < ti.size() && mismo; i++) {
+        mismo = (ti[i][INDANIO] == ti[i-1][INDANIO] && ti[i][INDTRIMESTRE] == ti[i-1][INDTRIMESTRE]);
     }
-    for (int i = 1; i < th.size(); i++) {
-        resp = resp && (th[i][HOGANIO] == th[i-1][HOGANIO] && th[i][HOGTRIMESTRE] == th[i-1][HOGTRIMESTRE]);
-    }
-
-    if (!ti.empty() && !th.empty()) {
-        resp = resp && (th[0][HOGANIO] == ti[0][INDANIO] && th[0][HOGTRIMESTRE] == ti[0][INDTRIMESTRE]);
+    for (int i = 1; i < th.size() && mismo; i++) {
+        mismo = (th[i][HOGANIO] == th[i-1][HOGANIO] && th[i][HOGTRIMESTRE] == th[i-1][HOGTRIMESTRE]);
     }
 
-    return resp;
+    if (!ti.empty() && !th.empty() && mismo) {
+        mismo = (th[0][HOGANIO] == ti[0][INDANIO] && th[0][HOGTRIMESTRE] == ti[0][INDTRIMESTRE]);
+    }
+
+    return mismo;
 }
 
 bool menosDe21MiembrosPorHogar ( eph_h th, eph_i ti ) {
-    bool resp = true;
+    bool menosDe21 = true;
 
-    for (int i = 0; i < th.size(); i++) {
+    for (int i = 0; i < th.size() && menosDe21; i++) {
         if (cantHabitantes(th[i], ti) >= 21) {
-            resp = false;
+            menosDe21 = false;
         }
     }
 
-    return resp;
+    return menosDe21;
 }
 
 int cantHabitantes ( hogar h, eph_i ti ) {
@@ -172,23 +170,23 @@ bool esSuHogar ( hogar h, individuo i ) {
 }
 
 bool cantidadValidaDormitorios ( eph_h th ) {
-    bool resp = true;
+    bool cantValida = true;
 
-    for (int i = 0; i < th.size(); i++) {
-        resp = resp && (th[i][IV2] >= th[i][II2]);
+    for (int i = 0; i < th.size() && cantValida; i++) {
+        cantValida = (th[i][IV2] >= th[i][II2]);
     }
 
-    return resp;
+    return cantValida;
 }
 
 bool valoresEnRangoI( eph_i ti ) {
-    bool resp = true;
+    bool enRango = true;
 
-    for (int i = 0; i < ti.size(); i++) {
-        resp = resp && individuoValido(ti[i]);
+    for (int i = 0; i < ti.size() && enRango; i++) {
+        enRango = individuoValido(ti[i]);
     }
 
-    return resp;
+    return enRango;
 }
 
 bool individuoValido ( individuo i ) {
@@ -209,13 +207,13 @@ bool individuoValido ( individuo i ) {
 }
 
 bool valoresEnRangoH( eph_h th ) {
-    bool resp = true;
+    bool enRango = true;
 
-    for (int i = 0; i < th.size(); i++) {
-        resp = resp && hogarValido(th[i]);
+    for (int i = 0; i < th.size() && enRango; i++) {
+        enRango = hogarValido(th[i]);
     }
 
-    return resp;
+    return enRango;
 }
 
 bool hogarValido ( hogar h ) {
