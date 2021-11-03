@@ -266,8 +266,8 @@ int maxCantHabitacionesEnCasaEnRegion ( eph_h th, dato r ) {
 
 float proporcionDeCasasConHC ( eph_h th, eph_i ti, dato region ) {
     float resp = 0;
-    float hogaresValidos = 0;
-    float hogaresConHC = 0;
+    int hogaresValidos = 0;
+    int hogaresConHC = 0;
 
     for (int i = 0; i < th.size(); i++) {
         if (esHogarConPosibleHC(th[i], region)) {
@@ -279,7 +279,7 @@ float proporcionDeCasasConHC ( eph_h th, eph_i ti, dato region ) {
     }
 
     if (hogaresValidos > 0) {
-        resp = hogaresConHC/hogaresValidos;
+        resp = (float) hogaresConHC/hogaresValidos;
     }
 
     return resp;
@@ -309,28 +309,38 @@ bool tieneEspaciosReservadosParaElTrabajo ( hogar h ) {
     return h[II3] == 1;
 }
 
-bool suHogarEsCasaODepartamento ( individuo i, eph_h th ) {
-    for (int j = 0 ; j < th.size(); j++) {
-        if (esSuHogar(th[j],i)) {
-            return esCasaODepartamento(th[j]);
-        }
-    }
+bool suHogarEsCasaODepartamento ( hogar h ) {
+//bool suHogarEsCasaODepartamento ( individuo i, eph_h th ) {
+//    bool esCasaoDepa = false;
+//    for (int j = 0 ; j < th.size(); j++) {
+//        if (esSuHogar(th[j],i)) {
+//            esCasaoDepa = esCasaODepartamento(th[j]);
+//        }
+//    }
+//    return esCasaoDepa;
+    return (esCasaODepartamento(h));
 }
 
 bool suHogarTieneEspaciosReservadosParaElTrabajo ( individuo i , eph_h th ) {
+    bool tieneEspacioParaTrabajo = false;
     for (int j = 0 ; j < th.size(); j++) {
         if (esSuHogar(th[j],i)) {
-            return tieneEspaciosReservadosParaElTrabajo(th[j]);
+            tieneEspacioParaTrabajo = tieneEspaciosReservadosParaElTrabajo(th[j]);
         }
     }
+    return tieneEspacioParaTrabajo;
 }
 
-bool esDeCiudadGrande ( individuo i , eph_h th ) {
-    for (int j = 0 ; j < th.size(); j++) {
-        if (esSuHogar(th[j],i)) {
-            return th[j][MAS_500] == 1;
-        }
-    }
+bool esDeCiudadGrande ( hogar h ) {
+//bool esDeCiudadGrande ( individuo i , eph_h th ) {
+//    bool deCiudadGrande = false;
+//    for (int j = 0 ; j < th.size(); j++) {
+//        if (esSuHogar(th[j],i)) {
+//            deCiudadGrande = th[j][MAS_500] == 1;
+//        }
+//    }
+//    return deCiudadGrande;
+    return (h[MAS_500] == 1);
 }
 
 int trimestre ( eph_i ti ) {
@@ -342,15 +352,21 @@ int anio ( eph_i ti ) {
 }
 
 bool individuoEnHogarValido ( individuo i , eph_h th ) {
-    return (esDeCiudadGrande(i,th) && suHogarEsCasaODepartamento(i,th));
+    bool enHogarValido = false;
+    for (int j = 0 ; j < th.size(); j++) {
+        if (esSuHogar(th[j],i)) {
+            enHogarValido = (esDeCiudadGrande(th[j]) && suHogarEsCasaODepartamento(th[j]));
+        }
+    }
+    return enHogarValido;
 }
 
 bool trabajaEnSuVivienda ( individuo i , eph_h th ) {
     return (realizaSusTareasEnEsteHogar(i) && suHogarTieneEspaciosReservadosParaElTrabajo(i,th));
 }
 
-float cantidadDeIndividuosQueTrabajan ( eph_h th , eph_i ti ) {
-    float res= 0;
+int cantidadDeIndividuosQueTrabajan ( eph_h th , eph_i ti ) {
+    int res= 0;
     for (int k = 0 ; k < ti.size() ; k++) {
         if (trabaja(ti[k]) && individuoEnHogarValido(ti[k], th)) {
             res++;
@@ -359,8 +375,8 @@ float cantidadDeIndividuosQueTrabajan ( eph_h th , eph_i ti ) {
     return res;
 }
 
-float cantIndividuosTrabajandoEnSuVivienda ( eph_h th , eph_i ti ) {
-    float res= 0;
+int cantIndividuosTrabajandoEnSuVivienda ( eph_h th , eph_i ti ) {
+    int res= 0;
     for (int k = 0 ; k < ti.size() ; k++) {
         if (trabaja(ti[k]) && individuoEnHogarValido(ti[k], th) && trabajaEnSuVivienda(ti[k], th)) {
             res++;
@@ -371,9 +387,10 @@ float cantIndividuosTrabajandoEnSuVivienda ( eph_h th , eph_i ti ) {
 
 float proporcionTeleworking (eph_h th , eph_i ti ) {
     float res = 0;
+    int cantQueTrabajan = cantidadDeIndividuosQueTrabajan(th,ti);
 
-    if (cantidadDeIndividuosQueTrabajan(th,ti) > 0) {
-        res = cantIndividuosTrabajandoEnSuVivienda(th, ti) / cantidadDeIndividuosQueTrabajan(th, ti);
+    if (cantQueTrabajan > 0) {
+        res = (float) cantIndividuosTrabajandoEnSuVivienda(th, ti) / cantQueTrabajan;
     }
 
     return res;
@@ -385,4 +402,12 @@ bool tieneCasaPropia ( hogar h ) {
 
 bool tieneCasaChica ( hogar h , eph_i ti ) {
     return cantHabitantes(h,ti) - 2 > h[II2];
+}
+
+void cambiarRegionesGBAaPampeana( eph_h & th ) {
+    for (int i = 0; i < th.size(); ++i) {
+        if (th[i][REGION] == GBA) {
+            th[i][REGION] = PAMPEANA;
+        }
+    }
 }

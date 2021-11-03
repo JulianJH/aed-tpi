@@ -50,6 +50,9 @@ vector< pair < int, float > > laCasaEstaQuedandoChica ( eph_h th, eph_i ti ) {
 // Implementacion Problema 4
 bool creceElTeleworkingEnCiudadesGrandes ( eph_h t1h, eph_i t1i, eph_h t2h, eph_i t2i ) {
 	//TODO: si da tiempo al final ver por qué tarda tanto el testcase de eph2016a2018
+    // (03/11/2021 algo pude mejorarlo pero igual tarda, por ahí es mejor dejarlo así y listo, idk)
+
+    //TODO: Borrar partes comentadas de auxiliares.cpp
 	return (proporcionTeleworking(t2h, t2i) > proporcionTeleworking(t1h, t1i));
 }
 
@@ -74,7 +77,7 @@ join_hi generarJoin( eph_h th, eph_i ti ){
 	
 	// TODO
 	
-  return  resp;
+    return  resp;
 }
 
 // Implementacion Problema 7
@@ -97,8 +100,8 @@ vector < hogar > muestraHomogenea( eph_h & th, eph_i & ti ){
 
 // Implementacion Problema 9
 void corregirRegion( eph_h & th, eph_i ti ) {
-	
-	// TODO
+
+    cambiarRegionesGBAaPampeana(th);
 	
 	return;
 }
