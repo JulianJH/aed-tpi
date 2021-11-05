@@ -108,9 +108,7 @@ void corregirRegion( eph_h & th, eph_i ti ) {
 
 // Implementacion Problema 10
 vector < int > histogramaDeAnillosConcentricos( eph_h th, eph_i ti, pair < int, int > centro, vector < int > distancias ){
-	vector < int > resp = {};
-	
-	// TODO
+	vector < int > resp = hogaresEnAnillosConcentricos(distancias, centro , th);
 	
 	return resp;
 }
