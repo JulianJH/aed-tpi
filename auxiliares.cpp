@@ -411,3 +411,30 @@ void cambiarRegionesGBAaPampeana( eph_h & th ) {
         }
     }
 }
+float distanciaEuclideana (pair<float,float> centro , int latitud , int longitud){
+    return sqrt(pow((centro.first - latitud),2) + pow((centro.second - longitud),2));
+}
+
+bool hogarEnAnillo(int distDesde, int distHasta , pair<float, float> centro, hogar h){
+    float res1 = distanciaEuclideana(centro,h[HOGLATITUD], h[HOGLONGITUD]);
+    return ( distDesde < res1 && res1 <= distHasta);
+}
+
+int  cantHogaresEnAnillo(int distDesde , int distHasta, pair<float, float> centro, eph_h th){
+    int res = 0;
+    for (int i =0; i < th.size();i++){
+        if (hogarEnAnillo(distDesde, distHasta, centro, th[i])){
+            res++;
+        }
+    }
+    return res;
+}
+
+vector<int> hogaresEnAnillosConcentricos (vector<int> distancias , pair<float, float> centro, eph_h th){
+    vector<int> res;
+    res.push_back(cantHogaresEnAnillo(0, distancias[0], centro, th));
+    for (int i =0; i < distancias.size() -1; i++){
+        res.push_back(cantHogaresEnAnillo(distancias[i], distancias[i+1], centro, th));
+    }
+    return res;
+}
