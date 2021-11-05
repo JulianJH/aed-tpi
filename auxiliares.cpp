@@ -411,6 +411,52 @@ void cambiarRegionesGBAaPampeana( eph_h & th ) {
         }
     }
 }
+
+hogar hogarDeIndividuo ( individuo i, eph_h th ) {
+    for (int j = 0; j < th.size(); ++j) {
+        if (esSuHogar(th[j],i)) {
+            return th[j];
+        }
+    }
+}
+
+void anexar ( vector<vector<dato>> & a, vector<vector<dato>> & b ) {
+    a.insert(a.end(), b.begin(), b.end());
+}
+
+eph_i individuosEnHogar ( hogar h, eph_i ti ) {
+    eph_i resp;
+    for (int i = 0; i < ti.size(); ++i) {
+        if (esSuHogar(h, ti[i])) {
+            resp.push_back(ti[i]);
+        }
+    }
+    return resp;
+}
+
+eph_i sacarHabitantesQueCumplen ( hogar h, eph_i & habitantes, vector <pair<int, dato>> busqueda ) {
+    eph_i resp;
+    for (int k = 0; k < habitantes.size(); ++k) {
+        individuo i = habitantes[k];
+        if (cumpleBusqueda(i, busqueda)) {
+            resp.push_back(i);
+            habitantes.erase(habitantes.begin() + k);
+            k--;
+        }
+    }
+    return resp;
+}
+
+bool cumpleBusqueda ( individuo i, vector <pair<int, dato>> busqueda ) {
+    for (int k = 0; k < busqueda.size(); ++k) {
+        pair < int, dato > criterio = busqueda[k];
+        if (i[criterio.first] != criterio.second) {
+            return false;
+        }
+    }
+    return true;
+}
+
 float distanciaEuclideana (pair<float,float> centro , int latitud , int longitud){
     return sqrt(pow((centro.first - latitud),2) + pow((centro.second - longitud),2));
 }

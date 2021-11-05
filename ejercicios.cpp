@@ -66,16 +66,19 @@ int costoSubsidioMejora( eph_h th, eph_i ti, int monto ){
 	    }
 	}
 	
-  return  resp;
+    return  resp;
 }
 
 // Implementacion Problema 6
 join_hi generarJoin( eph_h th, eph_i ti ){
-    hogar h = {};
-    individuo i = {};
-	join_hi resp = {make_pair(h,i)};
-	
-	// TODO
+//    hogar h = {};
+//    individuo i = {};
+//    pair => make_pair(h,i);
+	join_hi resp = {};
+
+    for (int i = 0; i < ti.size(); ++i) {
+        resp.push_back(make_pair(hogarDeIndividuo(ti[i], th), ti[i]));
+    }
 	
     return  resp;
 }
@@ -115,11 +118,26 @@ vector < int > histogramaDeAnillosConcentricos( eph_h th, eph_i ti, pair < int, 
 
 // Implementacion Problema 11
 pair < eph_h, eph_i > quitarIndividuos(eph_i & ti, eph_h & th, vector < pair < int, dato > >  busqueda ){
-    eph_h rth = {{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
-    eph_i rti = {{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
-    pair < eph_h, eph_i > resp = make_pair(rth, rti);
-		
-	// TODO
+    eph_h rth;
+    eph_i rti;
+
+    eph_i no_rti;
+
+    for (int j = 0; j < th.size(); ++j) {
+        vector<individuo> habitantesQueNoCumplen = individuosEnHogar(th[j], ti);
+        vector<individuo> habitantesQueCumplen = sacarHabitantesQueCumplen( th[j], habitantesQueNoCumplen, busqueda);
+        anexar(rti, habitantesQueCumplen);
+        anexar(no_rti, habitantesQueNoCumplen);
+        if (!habitantesQueCumplen.empty()) {
+            rth.push_back(th[j]);
+        }
+        if (habitantesQueNoCumplen.empty()) {
+            th.erase(th.begin() + j);
+            j--;
+        }
+    }
+
+    ti = no_rti;
 	
-	return resp;
+	return make_pair(rth, rti);
 }
