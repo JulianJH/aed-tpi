@@ -50,5 +50,9 @@ bool trabaja ( individuo i );
 bool tieneCasaPropia ( hogar h );
 bool tieneCasaChica ( hogar h , eph_i ti );
 void cambiarRegionesGBAaPampeana( eph_h & th );
+float distanciaEuclideana (pair<float,float> centro , float latitud , float longitud);
+bool hogarEnAnillo(float distDesde, float distHasta , pair<float, float> centro, hogar h);
+int  cantHogaresEnAnillo(float distDesde , float distHasta, pair<float, float> centro, eph_h th);
+vector<int> hogaresEnAnillosConcentricos (vector<int> distancias , pair<float, float> centro, eph_h th);
 
 #endif //SOLUCION_AUXILIARES_H
