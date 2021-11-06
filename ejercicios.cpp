@@ -92,11 +92,12 @@ void ordenarRegionYCODUSU (eph_h & th, eph_i & ti) {
 }
 
 // Implementacion Problema 8
-vector < hogar > muestraHomogenea( eph_h & th, eph_i & ti ){
-    hogar h = {};
-    vector < hogar > resp = {h};
+vector<hogar> muestraHomogenea( eph_h & th, eph_i & ti ){
+    vector<hogar> resp;
 
-    // TODO
+    ordenarPorIngresos(th, ti);
+
+    resp = mayorMuestraHomogenea(th, ti);
 
     return  resp;
 }

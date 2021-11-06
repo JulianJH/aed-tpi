@@ -240,18 +240,6 @@ bool esCasa ( hogar h ) {
     return (h[IV1] == 1);
 }
 
-int ingresos ( hogar h, eph_i ti ) {
-    int suma = 0;
-
-    for (int i = 0; i < ti.size(); i++) {
-        if (ti[i][INDCODUSU] == h[HOGCODUSU] && ti[i][p47T] > -1) {
-            suma += ti[i][p47T];
-        }
-    }
-
-    return suma;
-}
-
 int maxCantHabitacionesEnCasaEnRegion ( eph_h th, dato r ) {
     int maxHabs = 0;
 
@@ -484,3 +472,69 @@ vector<int> hogaresEnAnillosConcentricos (vector<int> distancias , pair<float, f
     }
     return res;
 }
+
+void ordenarPorIngresos( eph_h & th, eph_i & ti ) {
+    for (int i = 0; i < th.size(); ++i) {
+        int min = ingresos(th[i], ti);
+        int indiceMin = i;
+        for (int j = i; j < th.size(); ++j) {
+            int temp = ingresos(th[j], ti);
+            if (temp < min) {
+                min = temp;
+                indiceMin = j;
+            }
+        }
+        swap(th[i], th[indiceMin]);
+    }
+}
+
+int ingresos ( hogar h, eph_i ti ) {
+    int suma = 0;
+
+    for (int i = 0; i < ti.size(); i++) {
+        if (ti[i][INDCODUSU] == h[HOGCODUSU] && ti[i][p47T] > -1) {
+            suma += ti[i][p47T];
+        }
+    }
+
+    return suma;
+}
+
+vector<hogar> mayorMuestraHomogenea ( eph_h th, eph_i ti ) {
+    vector<hogar> resp;
+    for (int i = 0; i < th.size(); ++i) {
+        vector<hogar> temp = mayorMuestraHomoDesde(i, th, ti);
+        if (temp.size() > resp.size()) {
+            resp = temp;
+        }
+    }
+    return resp;
+}
+
+vector<hogar> mayorMuestraHomoDesde ( int i, eph_h th, eph_i ti ) {
+    vector<hogar> resp;
+    for (int j = i+1; j < th.size(); ++j) {
+        int dif = ingresos(th[j], ti) - ingresos(th[i], ti);
+        if (dif > 0) {
+            vector<hogar> temp = mayorMuestraHomoDesdeConDif(i, dif, th, ti);
+            if (temp.size() > resp.size()) {
+                resp = temp;
+            }
+        }
+    }
+    return resp;
+}
+
+vector<hogar> mayorMuestraHomoDesdeConDif ( int i, int dif, eph_h th, eph_i ti ) {
+    vector<hogar> resp = {th[i]};
+    for (int k = i+1; k < th.size(); ++k) {
+        if (ingresos(th[k], ti) - ingresos(resp[resp.size() - 1], ti) == dif) {
+            resp.push_back(th[k]);
+        }
+    }
+    if (resp.size() >= 3) {
+        return resp;
+    }
+    return {};
+}
+

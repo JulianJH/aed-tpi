@@ -59,5 +59,8 @@ float distanciaEuclideana (pair<float,float> centro , float latitud , float long
 bool hogarEnAnillo(float distDesde, float distHasta , pair<float, float> centro, hogar h);
 int  cantHogaresEnAnillo(float distDesde , float distHasta, pair<float, float> centro, eph_h th);
 vector<int> hogaresEnAnillosConcentricos (vector<int> distancias , pair<float, float> centro, eph_h th);
-
+void ordenarPorIngresos( eph_h & th, eph_i & ti );
+vector<hogar> mayorMuestraHomogenea ( eph_h th, eph_i ti );
+vector<hogar> mayorMuestraHomoDesde ( int i, eph_h th, eph_i ti );
+vector<hogar> mayorMuestraHomoDesdeConDif ( int i, int dif, eph_h th, eph_i ti );
 #endif //SOLUCION_AUXILIARES_H
