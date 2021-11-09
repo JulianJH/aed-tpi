@@ -63,4 +63,11 @@ void ordenarPorIngresos( eph_h & th, eph_i & ti );
 vector<hogar> mayorMuestraHomogenea ( eph_h th, eph_i ti );
 vector<hogar> mayorMuestraHomoDesde ( int i, eph_h th, eph_i ti );
 vector<hogar> mayorMuestraHomoDesdeConDif ( int i, int dif, eph_h th, eph_i ti );
+void estanOrdenadosPorCodusuDeHogarYComponente (eph_i  & ti, eph_h  th);
+void estanOrdenadosPorRegionYCodusu (eph_h & th);
+bool suHogarEstaAntes(individuo i1 , individuo i2, eph_h th);
+bool hogarEnTabla(hogar h, eph_h th);
+bool hogarEstaAntes (hogar h1, hogar h2, eph_h th);
+bool vivenJuntos(individuo i1, individuo i2);
+
 #endif //SOLUCION_AUXILIARES_H
