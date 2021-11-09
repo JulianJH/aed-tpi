@@ -86,7 +86,8 @@ join_hi generarJoin( eph_h th, eph_i ti ){
 // Implementacion Problema 7
 void ordenarRegionYCODUSU (eph_h & th, eph_i & ti) {
 	
-	// TODO
+	estanOrdenadosPorRegionYCodusu(th);
+    	estanOrdenadosPorCodusuDeHogarYComponente(ti,th);
 	
 	return;
 }
