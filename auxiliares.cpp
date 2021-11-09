@@ -538,3 +538,71 @@ vector<hogar> mayorMuestraHomoDesdeConDif ( int i, int dif, eph_h th, eph_i ti )
     return {};
 }
 
+bool vivenJuntos(individuo i1, individuo i2){
+    return  i1[INDCODUSU] = i2[INDCODUSU];
+}
+
+bool hogarEstaAntes (hogar h1, hogar h2, eph_h th){
+    for (int i = 0; i< th.size();i++){
+        for (int j = i+1 ; j < th.size();j++){
+            if ( th[i] == h1 && th[j] == h2){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool hogarEnTabla(hogar h, eph_h th){
+    for (int i = 0; i< th.size();i++){
+        if (th[i] == h){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool suHogarEstaAntes(individuo i1 , individuo i2, eph_h th){
+    bool res = false;
+    for (int i = 0; i< th.size();i++){
+        for (int j = 0 ; j < th.size();j++){
+            if(hogarEnTabla(th[i],th) && hogarEnTabla(th[j], th) && i != j && (th[i][HOGCODUSU] == i1[INDCODUSU] && th[j][HOGCODUSU] == i2[INDCODUSU])){
+                  return hogarEstaAntes(th[i], th[j], th);
+            }
+
+            }
+        }
+    return res;
+}
+
+
+
+void estanOrdenadosPorRegionYCodusu (eph_h & th){
+    for (int i = 0; i < th.size(); i++) {
+        for (int j = i+1; j < (th.size()); j++) {
+            if (th[i][REGION] < th[j][REGION]) {
+                swap(th[i], th[j]);
+            }
+            else if (th[i][REGION] == th[j][REGION]){
+                if (th[i][HOGCODUSU < th[j][HOGCODUSU]]){
+                    swap(th[i], th[j]);
+                }
+            }
+        }
+    }
+    return;
+}
+
+void estanOrdenadosPorCodusuDeHogarYComponente (eph_i  & ti, eph_h  th){
+    for (int i = 0; i < ti.size(); i++) {
+        for (int j = i+1; j < ti.size(); j++) {
+            if (!suHogarEstaAntes(ti[i],ti[j],th)) {
+                swap(ti[j], ti[i]);
+            }
+            else if (vivenJuntos(ti[i], ti[j]) && ti[i][COMPONENTE] < ti[j][COMPONENTE]){
+                    swap(ti[j],ti[i]);
+            }
+        }
+    }
+    return;
+}
