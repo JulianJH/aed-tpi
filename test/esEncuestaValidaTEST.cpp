@@ -145,7 +145,7 @@ TEST(esEncuestaValidaTEST, invalidaDormitoriosMayoresAHabitaciones) {
     //                                                              |   |
     //                                                              v   v
     eph_h th = {{22114, 2020,   3,  319611, 629088, 3,  41, 0,  1,  3,  1,  2},
-                {22866, 2020,   3,  317157, 627217, 2,  42, 1,  1,  2,  5,  2},
+                {22866, 2020,   1,  317157, 627217, 2,  42, 1,  1,  2,  5,  2},
                 {20957, 2020,   3,  313965, 623297, 1,  43, 0,  1,  3,  1,  2}};
     eph_i ti = {{20957, 2020,   1,  1,  3,  1,  88, 0,  0,  90000,  10},
                 {20957, 2020,   2,  1,  3,  2,  82, 0,  0,  25000,  10},
@@ -197,7 +197,7 @@ TEST(esEncuestaValidaTEST, validaeph2018_100) {
     eph_i ti;
     leerEncuesta ( "eph_3c_2018_100", th, ti );
 
-    EXPECT_EQ( true, esEncuestaValida(th, ti) );
+    EXPECT_TRUE(esEncuestaValida(th, ti) );
 }
 
 TEST(esEncuestaValidaTEST, validaeph2020_100) {
@@ -205,7 +205,7 @@ TEST(esEncuestaValidaTEST, validaeph2020_100) {
     eph_i ti;
     leerEncuesta ( "eph_3c_2020_100", th, ti );
 
-    EXPECT_EQ( true, esEncuestaValida(th, ti) );
+    EXPECT_TRUE(esEncuestaValida(th, ti) );
 }
 
 TEST(esEncuestaValidaTEST, validaPara100Cobrtura) {

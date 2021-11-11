@@ -244,7 +244,7 @@ int maxCantHabitacionesEnCasaEnRegion ( eph_h th, dato r ) {
     int maxHabs = 0;
 
     for (int i = 0; i < th.size(); i++) {
-        if (esCasa(th[i]) && th[i][REGION] == r && th[i][IV2] > maxHabs) {
+        if (th[i][REGION] == r && th[i][IV2] > maxHabs) {
             maxHabs = th[i][IV2];
         }
     }
