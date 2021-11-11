@@ -244,7 +244,7 @@ int maxCantHabitacionesEnCasaEnRegion ( eph_h th, dato r ) {
     int maxHabs = 0;
 
     for (int i = 0; i < th.size(); i++) {
-        if (esCasa(th[i]) && th[i][REGION] == r && th[i][IV2] > maxHabs) {
+        if (th[i][REGION] == r && th[i][IV2] > maxHabs) {
             maxHabs = th[i][IV2];
         }
     }
@@ -297,18 +297,6 @@ bool tieneEspaciosReservadosParaElTrabajo ( hogar h ) {
     return h[II3] == 1;
 }
 
-bool suHogarEsCasaODepartamento ( hogar h ) {
-//bool suHogarEsCasaODepartamento ( individuo i, eph_h th ) {
-//    bool esCasaoDepa = false;
-//    for (int j = 0 ; j < th.size(); j++) {
-//        if (esSuHogar(th[j],i)) {
-//            esCasaoDepa = esCasaODepartamento(th[j]);
-//        }
-//    }
-//    return esCasaoDepa;
-    return (esCasaODepartamento(h));
-}
-
 bool suHogarTieneEspaciosReservadosParaElTrabajo ( individuo i , eph_h th ) {
     bool tieneEspacioParaTrabajo = false;
     for (int j = 0 ; j < th.size(); j++) {
@@ -320,30 +308,14 @@ bool suHogarTieneEspaciosReservadosParaElTrabajo ( individuo i , eph_h th ) {
 }
 
 bool esDeCiudadGrande ( hogar h ) {
-//bool esDeCiudadGrande ( individuo i , eph_h th ) {
-//    bool deCiudadGrande = false;
-//    for (int j = 0 ; j < th.size(); j++) {
-//        if (esSuHogar(th[j],i)) {
-//            deCiudadGrande = th[j][MAS_500] == 1;
-//        }
-//    }
-//    return deCiudadGrande;
     return (h[MAS_500] == 1);
-}
-
-int trimestre ( eph_i ti ) {
-    return ti[0][INDTRIMESTRE];
-}
-
-int anio ( eph_i ti ) {
-    return ti[0][INDANIO];
 }
 
 bool individuoEnHogarValido ( individuo i , eph_h th ) {
     bool enHogarValido = false;
     for (int j = 0 ; j < th.size(); j++) {
         if (esSuHogar(th[j],i)) {
-            enHogarValido = (esDeCiudadGrande(th[j]) && suHogarEsCasaODepartamento(th[j]));
+            enHogarValido = (esDeCiudadGrande(th[j]) && esCasaODepartamento(th[j]));
         }
     }
     return enHogarValido;
@@ -401,14 +373,16 @@ void cambiarRegionesGBAaPampeana( eph_h & th ) {
 }
 
 hogar hogarDeIndividuo ( individuo i, eph_h th ) {
+    hogar h;
     for (int j = 0; j < th.size(); ++j) {
         if (esSuHogar(th[j],i)) {
-            return th[j];
+            h = th[j];
         }
     }
+    return h;
 }
 
-void anexar ( vector<vector<dato>> & a, vector<vector<dato>> & b ) {
+void concatenar ( vector<vector<dato>> & a, vector<vector<dato>> & b ) {
     a.insert(a.end(), b.begin(), b.end());
 }
 
@@ -445,16 +419,16 @@ bool cumpleBusqueda ( individuo i, vector <pair<int, dato>> busqueda ) {
     return true;
 }
 
-float distanciaEuclideana (pair<float,float> centro , int latitud , int longitud){
-    return sqrt(pow((centro.first - latitud),2) + pow((centro.second - longitud),2));
+vector<int> hogaresEnAnillosConcentricos (vector<int> distancias , pair<int, int> centro, eph_h th){
+    vector<int> res;
+    res.push_back(cantHogaresEnAnillo(0, distancias[0], centro, th));
+    for (int i =0; i < distancias.size() -1; i++){
+        res.push_back(cantHogaresEnAnillo(distancias[i], distancias[i+1], centro, th));
+    }
+    return res;
 }
 
-bool hogarEnAnillo(int distDesde, int distHasta , pair<float, float> centro, hogar h){
-    float res1 = distanciaEuclideana(centro,h[HOGLATITUD], h[HOGLONGITUD]);
-    return ( distDesde < res1 && res1 <= distHasta);
-}
-
-int  cantHogaresEnAnillo(int distDesde , int distHasta, pair<float, float> centro, eph_h th){
+int  cantHogaresEnAnillo(int distDesde , int distHasta, pair<int, int> centro, eph_h th){
     int res = 0;
     for (int i =0; i < th.size();i++){
         if (hogarEnAnillo(distDesde, distHasta, centro, th[i])){
@@ -464,13 +438,97 @@ int  cantHogaresEnAnillo(int distDesde , int distHasta, pair<float, float> centr
     return res;
 }
 
-vector<int> hogaresEnAnillosConcentricos (vector<int> distancias , pair<float, float> centro, eph_h th){
-    vector<int> res;
-    res.push_back(cantHogaresEnAnillo(0, distancias[0], centro, th));
-    for (int i =0; i < distancias.size() -1; i++){
-        res.push_back(cantHogaresEnAnillo(distancias[i], distancias[i+1], centro, th));
+bool hogarEnAnillo(int distDesde, int distHasta , pair<int, int> centro, hogar h){
+    float res1 = distanciaEuclideana(centro,h[HOGLATITUD], h[HOGLONGITUD]);
+    return ( distDesde < res1 && res1 <= distHasta);
+}
+
+float distanciaEuclideana (pair<int,int> centro , int latitud , int longitud){
+    return (float) sqrt(pow((centro.first - latitud),2) + pow((centro.second - longitud),2));
+}
+
+void ordenarHogaresPorRegionYCodusu( eph_h & th ) {
+    // vector de listas de hogares agrupados por región (en orden ascendente)
+    vector<eph_h> hogaresPorRegion(CANTIDAD_DE_REGIONES);
+
+    for (int i = 0; i < th.size(); ++i) {
+        switch (th[i][REGION]) {
+            case GBA:
+                hogaresPorRegion[0].push_back(th[i]);
+                break;
+            case NOA:
+                hogaresPorRegion[1].push_back(th[i]);
+                break;
+            case NEA:
+                hogaresPorRegion[2].push_back(th[i]);
+                break;
+            case CUYO:
+                hogaresPorRegion[3].push_back(th[i]);
+                break;
+            case PAMPEANA:
+                hogaresPorRegion[4].push_back(th[i]);
+                break;
+            case PATAGONIA:
+                hogaresPorRegion[5].push_back(th[i]);
+                break;
+        }
     }
-    return res;
+
+    th.clear();
+
+    for (int r = 0; r < CANTIDAD_DE_REGIONES; ++r) {
+        ordenarPorHogcodusu(hogaresPorRegion[r]);
+
+        for (int i = 0; i < hogaresPorRegion[r].size(); ++i) {
+            th.push_back(hogaresPorRegion[r][i]);
+        }
+    }
+
+    return;
+}
+
+void ordenarPorHogcodusu( eph_h & th ) {
+    for(int i = 0; i<th.size(); i++) {
+        hogar h = th[i];
+        int j = i;
+        while(j > 0 && th[j-1][HOGCODUSU]>h[HOGCODUSU]) {
+            th[j] = th[j-1];
+            j--;
+        }
+        th[j] = h;
+    }
+
+    return;
+}
+
+void ordenarIndividuosSegunHogarYComponente ( eph_h & th, eph_i & ti ) {
+    for(int i = 0; i<ti.size(); i++) {
+        individuo ind = ti[i];
+        int j = i;
+        //Ordeno por orden de th
+        while(j > 0 && !ordenCorrectoSegunHogares(ti[j-1], ind, th)) {
+            ti[j] = ti[j-1];
+            j--;
+        }
+        // Ordeno a los de un mismo hogar según su componente
+        while(j > 0 && ti[j-1][INDCODUSU]==ind[INDCODUSU] && ti[j-1][COMPONENTE] > ind[COMPONENTE]) {
+            ti[j] = ti[j-1];
+            j--;
+        }
+        ti[j] = ind;
+    }
+
+    return;
+}
+
+bool ordenCorrectoSegunHogares ( individuo i1, individuo i2, eph_h & th ) {
+    hogar h1 = hogarDeIndividuo(i1, th);
+    hogar h2 = hogarDeIndividuo(i2, th);
+    bool mismaRegion = (h1[REGION] == h2[REGION]);
+    bool mismaRegionCodusuAsciende = mismaRegion && (i1[INDCODUSU] <= i2[INDCODUSU]);
+    bool distintaRegionYAsciende = !mismaRegion && (h1[REGION] <= h2[REGION]);
+
+    return (mismaRegionCodusuAsciende || distintaRegionYAsciende);
 }
 
 void ordenarPorIngresos( eph_h & th, eph_i & ti ) {
@@ -527,7 +585,7 @@ vector<hogar> mayorMuestraHomoDesde ( int i, eph_h th, eph_i ti ) {
 
 vector<hogar> mayorMuestraHomoDesdeConDif ( int i, int dif, eph_h th, eph_i ti ) {
     vector<hogar> resp = {th[i]};
-    for (int k = i+1; k < th.size(); ++k) {
+    for (int k = i + 1; k < th.size(); ++k) {
         if (ingresos(th[k], ti) - ingresos(resp[resp.size() - 1], ti) == dif) {
             resp.push_back(th[k]);
         }
@@ -536,73 +594,4 @@ vector<hogar> mayorMuestraHomoDesdeConDif ( int i, int dif, eph_h th, eph_i ti )
         return resp;
     }
     return {};
-}
-
-bool vivenJuntos(individuo i1, individuo i2){
-    return  i1[INDCODUSU] = i2[INDCODUSU];
-}
-
-bool hogarEstaAntes (hogar h1, hogar h2, eph_h th){
-    for (int i = 0; i< th.size();i++){
-        for (int j = i+1 ; j < th.size();j++){
-            if ( th[i] == h1 && th[j] == h2){
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-bool hogarEnTabla(hogar h, eph_h th){
-    for (int i = 0; i< th.size();i++){
-        if (th[i] == h){
-            return true;
-        }
-    }
-    return false;
-}
-
-bool suHogarEstaAntes(individuo i1 , individuo i2, eph_h th){
-    bool res = false;
-    for (int i = 0; i< th.size();i++){
-        for (int j = 0 ; j < th.size();j++){
-            if(hogarEnTabla(th[i],th) && hogarEnTabla(th[j], th) && i != j && (th[i][HOGCODUSU] == i1[INDCODUSU] && th[j][HOGCODUSU] == i2[INDCODUSU])){
-                  return hogarEstaAntes(th[i], th[j], th);
-            }
-
-            }
-        }
-    return res;
-}
-
-
-
-void estanOrdenadosPorRegionYCodusu (eph_h & th){
-    for (int i = 0; i < th.size(); i++) {
-        for (int j = i+1; j < (th.size()); j++) {
-            if (th[i][REGION] < th[j][REGION]) {
-                swap(th[i], th[j]);
-            }
-            else if (th[i][REGION] == th[j][REGION]){
-                if (th[i][HOGCODUSU < th[j][HOGCODUSU]]){
-                    swap(th[i], th[j]);
-                }
-            }
-        }
-    }
-    return;
-}
-
-void estanOrdenadosPorCodusuDeHogarYComponente (eph_i  & ti, eph_h  th){
-    for (int i = 0; i < ti.size(); i++) {
-        for (int j = i+1; j < ti.size(); j++) {
-            if (!suHogarEstaAntes(ti[i],ti[j],th)) {
-                swap(ti[j], ti[i]);
-            }
-            else if (vivenJuntos(ti[i], ti[j]) && ti[i][COMPONENTE] < ti[j][COMPONENTE]){
-                    swap(ti[j],ti[i]);
-            }
-        }
-    }
-    return;
 }

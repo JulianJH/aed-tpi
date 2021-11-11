@@ -76,7 +76,7 @@ TEST(histHabitacionalTEST, eph2020_PATAGONIA) {
     leerEncuesta ( "eph_3c_2020_100", th, ti );
 
 
-    vector<int> resultado_esperado = { 2, 3, 5, 6 };
+    vector<int> resultado_esperado = { 2, 3, 5, 6, 0};
     EXPECT_EQ( resultado_esperado, histHabitacional(th, ti, 44) );
 }
 
