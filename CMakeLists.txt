@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(aed-tpi)
 
 # esta línea por ahí hay que sacarla
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 

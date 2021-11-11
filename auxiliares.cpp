@@ -311,10 +311,6 @@ bool esDeCiudadGrande ( hogar h ) {
     return (h[MAS_500] == 1);
 }
 
-int trimestre ( eph_i ti ) {
-    return ti[0][INDTRIMESTRE];
-}
-
 bool individuoEnHogarValido ( individuo i , eph_h th ) {
     bool enHogarValido = false;
     for (int j = 0 ; j < th.size(); j++) {
@@ -377,11 +373,13 @@ void cambiarRegionesGBAaPampeana( eph_h & th ) {
 }
 
 hogar hogarDeIndividuo ( individuo i, eph_h th ) {
+    hogar h;
     for (int j = 0; j < th.size(); ++j) {
         if (esSuHogar(th[j],i)) {
-            return th[j];
+            h = th[j];
         }
     }
+    return h;
 }
 
 void concatenar ( vector<vector<dato>> & a, vector<vector<dato>> & b ) {
