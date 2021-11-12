@@ -94,12 +94,12 @@ TEST(histHabitacionalTEST, hist100) {
                 {20101,2020,1,0,3,2,9,0,0,0,10},
                 {20102,2020,1,0,3,2,2,0,0,0,10}};
 
-    if (!esEncuestaValida(th,ti)) {
+//    if (!esEncuestaValida(th,ti)) {
         ASSERT_TRUE(esEncuestaValida(th,ti));
-    }
-    else {
+//    }
+//    else {
         vector<int> resultado_esperado = {0, 1, 0, 0, 1};
         EXPECT_EQ( resultado_esperado, histHabitacional(th, ti, 41) );
-    }
+//    }
 
 }
